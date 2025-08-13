@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduManage - Tutoring Management Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#2563EB',
+                        'secondary': '#10B981',
+                        'accent': '#F59E0B',
+                        'neutral': '#6B7280',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- @COMPONENT: AuthenticationWrapper -->
+    <div id="loginSection" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <!-- @COMPONENT: LoginForm -->
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
+                        <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900">EduManage</h1>
+                    <p class="text-gray-600 mt-2">Your complete tutoring management solution</p>
+                </div>
+                
+                <form class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter your email" data-mock="true">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Enter your password" data-mock="true">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Login as:</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" class="role-btn p-3 border-2 border-gray-200 rounded-xl text-center hover:border-primary hover:bg-blue-50 transition-all duration-200" data-role="tutor">
+                                <i class="fas fa-chalkboard-teacher text-primary mb-2"></i>
+                                <div class="text-sm font-medium">Tutor</div>
+                            </button>
+                            <button type="button" class="role-btn p-3 border-2 border-gray-200 rounded-xl text-center hover:border-secondary hover:bg-green-50 transition-all duration-200" data-role="student">
+                                <i class="fas fa-user-graduate text-secondary mb-2"></i>
+                                <div class="text-sm font-medium">Student</div>
+                            </button>
+                            <button type="button" class="role-btn p-3 border-2 border-gray-200 rounded-xl text-center hover:border-accent hover:bg-amber-50 transition-all duration-200" data-role="parent">
+                                <i class="fas fa-users text-accent mb-2"></i>
+                                <div class="text-sm font-medium">Parent</div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" onclick="showDashboard()" class="w-full bg-primary text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200" data-event="click:handleLogin">
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <a href="#" class="text-primary hover:underline text-sm">Forgot password?</a>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: LoginForm -->
+    </div>
+    <!-- @END_COMPONENT: AuthenticationWrapper -->
+
+    <!-- @COMPONENT: MainDashboard -->
+    <div id="dashboardSection" class="hidden min-h-screen bg-gray-50">
+        <!-- @COMPONENT: TopNavigation -->
+        <nav class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <div class="flex items-center">
+                            <div class="inline-flex items-center justify-center w-8 h-8 bg-primary rounded-lg">
+                                <i class="fas fa-graduation-cap text-white text-sm"></i>
+                            </div>
+                            <h1 class="ml-3 text-xl font-bold text-gray-900">EduManage</h1>
+                        </div>
+                        <div class="ml-8 flex space-x-1">
+                            <button class="nav-tab px-4 py-2 text-sm font-medium text-primary bg-blue-50 rounded-lg" data-tab="overview">Overview</button>
+                            <button class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg" data-tab="students">Students</button>
+                            <button class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg" data-tab="classes">Classes</button>
+                            <button class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg" data-tab="attendance">Attendance</button>
+                            <button class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg" data-tab="fees">Fees</button>
+                            <button class="nav-tab px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg" data-tab="homework">Homework</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button class="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </button>
+                        <div class="flex items-center space-x-3">
+                            <div class="text-right">
+                                <div class="text-sm font-medium text-gray-900" data-bind="user.name">Sarah Johnson</div>
+                                <div class="text-xs text-gray-500" data-bind="user.role">Mathematics Tutor</div>
+                            </div>
+                            <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">
+                                <span class="text-sm font-medium">SJ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- @END_COMPONENT: TopNavigation -->
+
+        <!-- @COMPONENT: DashboardContent -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Overview Tab -->
+            <div id="overviewTab" class="tab-content">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-blue-100 rounded-lg">
+                                <i class="fas fa-users text-primary"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Total Students</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="stats.totalStudents">247</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 rounded-lg">
+                                <i class="fas fa-calendar-check text-secondary"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Classes Today</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="stats.classesToday">12</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-amber-100 rounded-lg">
+                                <i class="fas fa-dollar-sign text-accent"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Monthly Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="stats.monthlyRevenue">$18,420</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-purple-100 rounded-lg">
+                                <i class="fas fa-chart-line text-purple-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600">Avg Attendance</p>
+                                <p class="text-2xl font-bold text-gray-900" data-bind="stats.avgAttendance">94.2%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity and Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Recent Activity -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <div class="p-6 border-b border-gray-100">
+                            <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                        </div>
+                        <div class="p-6">
+                            <!-- @MAP: activities.map(activity => ( -->
+                            <div class="flex items-center space-x-4 mb-4 last:mb-0" data-mock="true">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user-check text-primary text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">New student enrollment</p>
+                                    <p class="text-sm text-gray-600">Alex Chen joined Mathematics Grade 10</p>
+                                    <p class="text-xs text-gray-500">2 minutes ago</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4 mb-4 last:mb-0" data-mock="true">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-dollar-sign text-secondary text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">Fee payment received</p>
+                                    <p class="text-sm text-gray-600">Emma Wilson paid $250 for November</p>
+                                    <p class="text-xs text-gray-500">1 hour ago</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-4 mb-4 last:mb-0" data-mock="true">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-clipboard-check text-purple-600 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">Homework submitted</p>
+                                    <p class="text-sm text-gray-600">5 students submitted Physics Chapter 3 assignments</p>
+                                    <p class="text-xs text-gray-500">3 hours ago</p>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                        <div class="p-6 border-b border-gray-100">
+                            <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <button class="w-full bg-primary text-white p-4 rounded-lg text-left hover:bg-blue-700 transition-colors" data-event="click:markAttendance">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle mr-3"></i>
+                                    <div>
+                                        <div class="font-medium">Mark Attendance</div>
+                                        <div class="text-sm opacity-90">Take attendance for today's classes</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button class="w-full bg-secondary text-white p-4 rounded-lg text-left hover:bg-green-700 transition-colors" data-event="click:sendAnnouncement">
+                                <div class="flex items-center">
+                                    <i class="fas fa-bullhorn mr-3"></i>
+                                    <div>
+                                        <div class="font-medium">Send Announcement</div>
+                                        <div class="text-sm opacity-90">Notify students and parents</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button class="w-full bg-accent text-white p-4 rounded-lg text-left hover:bg-amber-600 transition-colors" data-event="click:assignHomework">
+                                <div class="flex items-center">
+                                    <i class="fas fa-tasks mr-3"></i>
+                                    <div>
+                                        <div class="font-medium">Assign Homework</div>
+                                        <div class="text-sm opacity-90">Create new assignments</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button class="w-full bg-purple-600 text-white p-4 rounded-lg text-left hover:bg-purple-700 transition-colors" data-event="click:generateReport">
+                                <div class="flex items-center">
+                                    <i class="fas fa-chart-bar mr-3"></i>
+                                    <div>
+                                        <div class="font-medium">Generate Reports</div>
+                                        <div class="text-sm opacity-90">View analytics and insights</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Tab -->
+            <div id="studentsTab" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Student Management</h3>
+                            <div class="flex items-center space-x-3">
+                                <div class="relative">
+                                    <input type="text" placeholder="Search students..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                </div>
+                                <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" data-event="click:addStudent">
+                                    <i class="fas fa-plus mr-2"></i>Add Student
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left border-b border-gray-200">
+                                        <th class="pb-3 text-sm font-semibold text-gray-600">Student</th>
+                                        <th class="pb-3 text-sm font-semibold text-gray-600">Class</th>
+                                        <th class="pb-3 text-sm font-semibold text-gray-600">Attendance</th>
+                                        <th class="pb-3 text-sm font-semibold text-gray-600">Fees Status</th>
+                                        <th class="pb-3 text-sm font-semibold text-gray-600">Performance</th>
+                                        <th class="pb-3 text-sm font-semibold text-gray-600">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <!-- @MAP: students.map(student => ( -->
+                                    <tr class="hover:bg-gray-50" data-mock="true">
+                                        <td class="py-4">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                                                    AC
+                                                </div>
+                                                <div class="ml-3">
+                                                    <div class="text-sm font-medium text-gray-900">Alex Chen</div>
+                                                    <div class="text-sm text-gray-600">alex.chen@email.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 text-sm text-gray-900">Mathematics Grade 10</td>
+                                        <td class="py-4">
+                                            <div class="flex items-center">
+                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-secondary h-2 rounded-full" style="width: 92%"></div>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-900">92%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4">
+                                            <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                Paid
+                                            </span>
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900 mr-2">85%</div>
+                                                <span class="text-xs text-green-600">↑ 5%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <button class="text-primary hover:text-blue-700" data-event="click:viewStudent">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="text-secondary hover:text-green-700" data-event="click:editStudent">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-700" data-event="click:deleteStudent">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="hover:bg-gray-50" data-mock="true">
+                                        <td class="py-4">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 bg-secondary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                                                    EW
+                                                </div>
+                                                <div class="ml-3">
+                                                    <div class="text-sm font-medium text-gray-900">Emma Wilson</div>
+                                                    <div class="text-sm text-gray-600">emma.wilson@email.com</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-4 text-sm text-gray-900">Physics Grade 11</td>
+                                        <td class="py-4">
+                                            <div class="flex items-center">
+                                                <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                                    <div class="bg-secondary h-2 rounded-full" style="width: 96%"></div>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-900">96%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4">
+                                            <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                Paid
+                                            </span>
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="flex items-center">
+                                                <div class="text-sm font-medium text-gray-900 mr-2">91%</div>
+                                                <span class="text-xs text-green-600">↑ 3%</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <button class="text-primary hover:text-blue-700" data-event="click:viewStudent">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="text-secondary hover:text-green-700" data-event="click:editStudent">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-700" data-event="click:deleteStudent">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- @END_MAP )) -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div id="attendanceTab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Attendance Marking -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <div class="p-6 border-b border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-900">Mark Attendance</h3>
+                                <div class="flex items-center space-x-3">
+                                    <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option>Mathematics Grade 10 - Today 2:00 PM</option>
+                                        <option>Physics Grade 11 - Today 4:00 PM</option>
+                                    </select>
+                                    <button class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors" data-event="click:saveAttendance">
+                                        Save Attendance
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <!-- @MAP: classStudents.map(student => ( -->
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-3 last:mb-0" data-mock="true">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium mr-4">
+                                        AC
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Alex Chen</div>
+                                        <div class="text-sm text-gray-600">Roll No: 101</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="attendance-101" value="present" class="w-4 h-4 text-secondary border-gray-300 focus:ring-secondary" checked>
+                                        <span class="ml-2 text-sm text-gray-700">Present</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="attendance-101" value="absent" class="w-4 h-4 text-red-600 border-gray-300 focus:ring-red-500">
+                                        <span class="ml-2 text-sm text-gray-700">Absent</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="attendance-101" value="late" class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                        <span class="ml-2 text-sm text-gray-700">Late</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-3 last:mb-0" data-mock="true">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-secondary text-white rounded-full flex items-center justify-center text-sm font-medium mr-4">
+                                        EW
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Emma Wilson</div>
+                                        <div class="text-sm text-gray-600">Roll No: 102</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="attendance-102" value="present" class="w-4 h-4 text-secondary border-gray-300 focus:ring-secondary" checked>
+                                        <span class="ml-2 text-sm text-gray-700">Present</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="attendance-102" value="absent" class="w-4 h-4 text-red-600 border-gray-300 focus:ring-red-500">
+                                        <span class="ml-2 text-sm text-gray-700">Absent</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="attendance-102" value="late" class="w-4 h-4 text-accent border-gray-300 focus:ring-accent">
+                                        <span class="ml-2 text-sm text-gray-700">Late</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+
+                    <!-- Attendance Statistics -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Today's Summary</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Total Present</span>
+                                    <span class="text-lg font-semibold text-secondary">23</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Absent</span>
+                                    <span class="text-lg font-semibold text-red-600">2</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Late Arrivals</span>
+                                    <span class="text-lg font-semibold text-accent">1</span>
+                                </div>
+                                <div class="border-t border-gray-200 pt-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium text-gray-900">Attendance Rate</span>
+                                        <span class="text-xl font-bold text-secondary">92.3%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
+                            <div class="space-y-3">
+                                <button class="w-full bg-primary text-white py-2 rounded-lg hover:bg-blue-700 transition-colors" data-event="click:bulkMarkPresent">
+                                    Mark All Present
+                                </button>
+                                <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:copyPreviousAttendance">
+                                    Copy Previous Day
+                                </button>
+                                <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:exportAttendance">
+                                    Export Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fees Tab -->
+            <div id="feesTab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Fees Overview -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                            <div class="p-6 border-b border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-semibold text-gray-900">Fee Management</h3>
+                                    <div class="flex items-center space-x-3">
+                                        <select class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            <option>November 2024</option>
+                                            <option>October 2024</option>
+                                            <option>September 2024</option>
+                                        </select>
+                                        <button class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors" data-event="click:generateFeeReport">
+                                            Generate Bill
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead>
+                                            <tr class="text-left border-b border-gray-200">
+                                                <th class="pb-3 text-sm font-semibold text-gray-600">Student</th>
+                                                <th class="pb-3 text-sm font-semibold text-gray-600">Amount Due</th>
+                                                <th class="pb-3 text-sm font-semibold text-gray-600">Due Date</th>
+                                                <th class="pb-3 text-sm font-semibold text-gray-600">Status</th>
+                                                <th class="pb-3 text-sm font-semibold text-gray-600">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            <!-- @MAP: feeRecords.map(record => ( -->
+                                            <tr class="hover:bg-gray-50" data-mock="true">
+                                                <td class="py-4">
+                                                    <div class="flex items-center">
+                                                        <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                                                            AC
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <div class="text-sm font-medium text-gray-900">Alex Chen</div>
+                                                            <div class="text-xs text-gray-600">Mathematics Grade 10</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="py-4 text-sm font-medium text-gray-900">$250.00</td>
+                                                <td class="py-4 text-sm text-gray-600">Nov 30, 2024</td>
+                                                <td class="py-4">
+                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                        Paid
+                                                    </span>
+                                                </td>
+                                                <td class="py-4">
+                                                    <div class="flex items-center space-x-2">
+                                                        <button class="text-primary hover:text-blue-700" data-event="click:viewReceipt">
+                                                            <i class="fas fa-receipt"></i>
+                                                        </button>
+                                                        <button class="text-secondary hover:text-green-700" data-event="click:sendReminder">
+                                                            <i class="fas fa-envelope"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <tr class="hover:bg-gray-50" data-mock="true">
+                                                <td class="py-4">
+                                                    <div class="flex items-center">
+                                                        <div class="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center text-sm font-medium">
+                                                            MW
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <div class="text-sm font-medium text-gray-900">Mike Johnson</div>
+                                                            <div class="text-xs text-gray-600">Physics Grade 11</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="py-4 text-sm font-medium text-gray-900">$300.00</td>
+                                                <td class="py-4 text-sm text-gray-600">Nov 25, 2024</td>
+                                                <td class="py-4">
+                                                    <span class="inline-flex px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                                                        Overdue
+                                                    </span>
+                                                </td>
+                                                <td class="py-4">
+                                                    <div class="flex items-center space-x-2">
+                                                        <button class="text-primary hover:text-blue-700" data-event="click:viewReceipt">
+                                                            <i class="fas fa-receipt"></i>
+                                                        </button>
+                                                        <button class="text-red-600 hover:text-red-700" data-event="click:sendReminder">
+                                                            <i class="fas fa-exclamation-triangle"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <!-- @END_MAP )) -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Statistics -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">This Month</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Total Expected</span>
+                                    <span class="text-lg font-semibold text-gray-900">$18,750</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Collected</span>
+                                    <span class="text-lg font-semibold text-secondary">$15,420</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Pending</span>
+                                    <span class="text-lg font-semibold text-accent">$2,130</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Overdue</span>
+                                    <span class="text-lg font-semibold text-red-600">$1,200</span>
+                                </div>
+                                <div class="border-t border-gray-200 pt-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm font-medium text-gray-900">Collection Rate</span>
+                                        <span class="text-xl font-bold text-secondary">82.3%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
+                            <div class="space-y-3">
+                                <button class="w-full bg-secondary text-white py-2 rounded-lg hover:bg-green-700 transition-colors" data-event="click:sendBulkReminders">
+                                    Send Bulk Reminders
+                                </button>
+                                <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:exportFeeReport">
+                                    Export Fee Report
+                                </button>
+                                <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:generateInvoices">
+                                    Generate Invoices
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Homework Tab -->
+            <div id="homeworkTab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Homework Management -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                            <div class="p-6 border-b border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-semibold text-gray-900">Homework Assignments</h3>
+                                    <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors" data-event="click:createHomework">
+                                        <i class="fas fa-plus mr-2"></i>New Assignment
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <!-- @MAP: homeworkAssignments.map(assignment => ( -->
+                                <div class="border border-gray-200 rounded-lg p-4 mb-4 last:mb-0" data-mock="true">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-900">Chapter 5: Quadratic Equations</h4>
+                                            <p class="text-sm text-gray-600">Mathematics Grade 10 • Assigned Nov 20, 2024</p>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="inline-flex px-2 py-1 text-xs font-medium bg-amber-100 text-amber-800 rounded-full">
+                                                Due: Nov 27
+                                            </span>
+                                            <div class="flex items-center space-x-1">
+                                                <button class="text-primary hover:text-blue-700" data-event="click:editHomework">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-700" data-event="click:deleteHomework">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-sm text-gray-700 mb-4">Complete exercises 5.1 to 5.5 from the textbook. Show all working steps clearly.</p>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-users mr-1"></i>
+                                                <span>25 students</span>
+                                            </div>
+                                            <div class="flex items-center text-sm text-secondary">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                <span>18 submitted</span>
+                                            </div>
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                <span>7 pending</span>
+                                            </div>
+                                        </div>
+                                        <button class="text-primary hover:text-blue-700 text-sm font-medium" data-event="click:viewSubmissions">
+                                            View Submissions →
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="border border-gray-200 rounded-lg p-4 mb-4 last:mb-0" data-mock="true">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div>
+                                            <h4 class="text-lg font-medium text-gray-900">Lab Report: Projectile Motion</h4>
+                                            <p class="text-sm text-gray-600">Physics Grade 11 • Assigned Nov 18, 2024</p>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                Completed
+                                            </span>
+                                            <div class="flex items-center space-x-1">
+                                                <button class="text-primary hover:text-blue-700" data-event="click:editHomework">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-700" data-event="click:deleteHomework">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-sm text-gray-700 mb-4">Analyze the projectile motion experiment data and write a comprehensive lab report.</p>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-users mr-1"></i>
+                                                <span>18 students</span>
+                                            </div>
+                                            <div class="flex items-center text-sm text-secondary">
+                                                <i class="fas fa-check-circle mr-1"></i>
+                                                <span>18 submitted</span>
+                                            </div>
+                                            <div class="flex items-center text-sm text-gray-600">
+                                                <i class="fas fa-star mr-1"></i>
+                                                <span>All graded</span>
+                                            </div>
+                                        </div>
+                                        <button class="text-primary hover:text-blue-700 text-sm font-medium" data-event="click:viewSubmissions">
+                                            View Results →
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Homework Statistics -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">This Week</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Active Assignments</span>
+                                    <span class="text-lg font-semibold text-primary">6</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Total Submissions</span>
+                                    <span class="text-lg font-semibold text-secondary">142</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Pending Review</span>
+                                    <span class="text-lg font-semibold text-accent">28</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Average Score</span>
+                                    <span class="text-lg font-semibold text-secondary">87%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
+                            <div class="space-y-3">
+                                <button class="w-full bg-primary text-white py-2 rounded-lg hover:bg-blue-700 transition-colors" data-event="click:bulkGrading">
+                                    Bulk Grading
+                                </button>
+                                <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:downloadSubmissions">
+                                    Download All
+                                </button>
+                                <button class="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors" data-event="click:sendReminders">
+                                    Send Reminders
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Recent Submissions</h4>
+                            <div class="space-y-3">
+                                <!-- @MAP: recentSubmissions.map(submission => ( -->
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-mock="true">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Alex Chen</div>
+                                        <div class="text-xs text-gray-600">Math Ch.5 - 2 min ago</div>
+                                    </div>
+                                    <button class="text-primary hover:text-blue-700 text-sm" data-event="click:reviewSubmission">
+                                        Review
+                                    </button>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-mock="true">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">Emma Wilson</div>
+                                        <div class="text-xs text-gray-600">Physics Lab - 15 min ago</div>
+                                    </div>
+                                    <button class="text-primary hover:text-blue-700 text-sm" data-event="click:reviewSubmission">
+                                        Review
+                                    </button>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- @END_COMPONENT: DashboardContent -->
+    </div>
+    <!-- @END_COMPONENT: MainDashboard -->
+
+    <!-- @COMPONENT: NotificationModal -->
+    <div id="notificationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-bell text-primary text-lg"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 ml-4">Notifications</h3>
+            </div>
+            <div class="space-y-3 mb-6">
+                <!-- @MAP: notifications.map(notification => ( -->
+                <div class="p-3 bg-gray-50 rounded-lg" data-mock="true">
+                    <div class="text-sm font-medium text-gray-900">New student enrollment</div>
+                    <div class="text-xs text-gray-600 mt-1">Alex Chen joined Mathematics Grade 10</div>
+                    <div class="text-xs text-gray-500 mt-1">2 minutes ago</div>
+                </div>
+                
+                <div class="p-3 bg-gray-50 rounded-lg" data-mock="true">
+                    <div class="text-sm font-medium text-gray-900">Fee payment received</div>
+                    <div class="text-xs text-gray-600 mt-1">Emma Wilson paid $250 for November</div>
+                    <div class="text-xs text-gray-500 mt-1">1 hour ago</div>
+                </div>
+                
+                <div class="p-3 bg-gray-50 rounded-lg" data-mock="true">
+                    <div class="text-sm font-medium text-gray-900">Homework submitted</div>
+                    <div class="text-xs text-gray-600 mt-1">5 students submitted Physics assignments</div>
+                    <div class="text-xs text-gray-500 mt-1">3 hours ago</div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="hideNotifications()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    Close
+                </button>
+                <button class="flex-1 bg-primary text-white py-2 rounded-lg hover:bg-blue-700 transition-colors" data-event="click:markAllRead">
+                    Mark All Read
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: NotificationModal -->
+
+    <script>
+        (function() {
+            // Tab switching functionality
+            function switchTab(tabName) {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Show selected tab content
+                const selectedTab = document.getElementById(tabName + 'Tab');
+                if (selectedTab) {
+                    selectedTab.classList.remove('hidden');
+                }
+                
+                // Update navigation buttons
+                document.querySelectorAll('.nav-tab').forEach(btn => {
+                    btn.classList.remove('text-primary', 'bg-blue-50');
+                    btn.classList.add('text-gray-600');
+                });
+                
+                const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+                if (activeBtn) {
+                    activeBtn.classList.remove('text-gray-600');
+                    activeBtn.classList.add('text-primary', 'bg-blue-50');
+                }
+            }
+
+            // Add click listeners to navigation tabs
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabName = btn.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+
+            // Role selection functionality
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Reset all role buttons
+                    document.querySelectorAll('.role-btn').forEach(b => {
+                        b.classList.remove('border-primary', 'bg-blue-50', 'border-secondary', 'bg-green-50', 'border-accent', 'bg-amber-50');
+                        b.classList.add('border-gray-200');
+                    });
+                    
+                    // Highlight selected role
+                    const role = btn.getAttribute('data-role');
+                    if (role === 'tutor') {
+                        btn.classList.add('border-primary', 'bg-blue-50');
+                    } else if (role === 'student') {
+                        btn.classList.add('border-secondary', 'bg-green-50');
+                    } else if (role === 'parent') {
+                        btn.classList.add('border-accent', 'bg-amber-50');
+                    }
+                });
+            });
+
+            // Show dashboard function
+            window.showDashboard = function() {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                switchTab('overview'); // Default to overview tab
+            };
+
+            // Show/hide notifications
+            window.showNotifications = function() {
+                document.getElementById('notificationModal').classList.remove('hidden');
+            };
+
+            window.hideNotifications = function() {
+                document.getElementById('notificationModal').classList.add('hidden');
+            };
+
+            // Add notification button click listener
+            document.querySelector('.fas.fa-bell').addEventListener('click', showNotifications);
+
+            // TODO: Implement business logic, API calls, and state management
+            // TODO: Add form validation and error handling
+            // TODO: Implement real-time notifications
+            // TODO: Add data persistence and synchronization
+            // TODO: Implement role-based access control
+            // TODO: Add bulk operations functionality
+            // TODO: Implement file upload for homework submissions
+            // TODO: Add reporting and analytics features
+            // TODO: Implement payment gateway integration
+            // TODO: Add messaging system between users
+        })();
+    </script>
+</body>
+</html>
